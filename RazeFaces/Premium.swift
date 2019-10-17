@@ -29,10 +29,14 @@
 import Foundation
 
 public struct Premium {
+  
+  public static let SwiftShopping = "1196426"
+  
+  private static let productIdentifiers: Set<ProductIdentifier> = [Premium.SwiftShopping]
 
-  public static let store = IAPHelper(productIds: ["1196426"])
+  public static let store = IAPHelper(productIds: Premium.productIdentifiers)
 }
 
-//func resourceNameForProductIdentifier(_ productIdentifier: String) -> String? {
-//  return productIdentifier.components(separatedBy: ".").last
-//}
+func resourceNameForProductIdentifier(_ productIdentifier: String) -> String? {
+  return productIdentifier.components(separatedBy: ".").last
+}

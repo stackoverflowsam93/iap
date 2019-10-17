@@ -41,6 +41,8 @@ open class IAPHelper: NSObject  {
   private var purchasedProductIdentifiers: Set<ProductIdentifier> = []  //Tracks which items have been purchased
   private var productsRequest: SKProductsRequest?   //Used by SKProductsRequest to perform requests to Apple
   private var productsRequestCompletionHandler: ProductsRequestCompletionHandler? //Used by SKProductsRequest to perform requests to Apple
+  private var products = [SKProduct]()
+  var request: SKProductsRequest!
   
   public init(productIds: Set<ProductIdentifier>) {
       productIdentifiers = productIds
@@ -57,6 +59,11 @@ open class IAPHelper: NSObject  {
       }
       super.init()
       SKPaymentQueue.default().add(self)
+    let productIdentifiers = Set(Premium.store.productIdentifiers)
+
+      request = SKProductsRequest(productIdentifiers: productIdentifiers)
+      request.delegate = self
+      request.start()
   }
 }
 
@@ -71,10 +78,10 @@ extension IAPHelper: SKProductsRequestDelegate {
   //when the request finishes, both the request and completion handler are cleared with clearRequestAndHandler()
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
       print("Loaded list of products...")
-      let products = response.products
+      self.products = response.products
       productsRequestCompletionHandler?(true, products)
       clearRequestAndHandler()
-
+      print(products)
       for p in products {
         print("Found product: \(p.productIdentifier) \(p.localizedTitle) \(p.price.floatValue)")
       }
@@ -111,6 +118,8 @@ extension IAPHelper: SKProductsRequestDelegate {
     let payment = SKPayment(product: product)
     SKPaymentQueue.default().add(payment)
   }
+  
+
 
   //Checks locally if product is purchased, to avoid making requests to apples servers every time
   public func isProductPurchased(_ productIdentifier: ProductIdentifier) -> Bool {

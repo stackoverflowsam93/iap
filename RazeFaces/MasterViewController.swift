@@ -79,11 +79,10 @@ class MasterViewController: UIViewController {
   
   @IBAction func buyPremium(_ sender: UIButton) {
 
-//    if (premiumIsAlreadyPurchased){
-//      RazeFaceProducts.store.restorePurchases()
-//    }
-    if IAPHelper.canMakePayments(){
-    Premium.store.buyProduct(<#T##product: SKProduct##SKProduct#>)
+    if Premium.store.isProductPurchased(self.productIdentifier){
+      Premium.store.restorePurchases()
+    //}else if IAPHelper.canMakePayments(){
+    //  Premium.store.buyProduct(Premium.store.)
     }else{
       let alert = UIAlertController(title: "Not authorized to make payments", message: "You can not make purchases on this device", preferredStyle: .alert)
       let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
